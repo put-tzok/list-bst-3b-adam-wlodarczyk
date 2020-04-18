@@ -175,10 +175,6 @@ char *insert_names[] = { "Increasing", "Random", "Binary" };
 void (*insert_functions[])(int*, int) = { insert_increasing, insert_random, insert_binary };
 
 
-
-#define REPEATS 100000
-
-
 int main(int argc, char **argv) {
     for (unsigned int i = 0; i < sizeof(insert_functions) / sizeof(*insert_functions); i++) {
         void (*insert)(int*, int) = insert_functions[i];
