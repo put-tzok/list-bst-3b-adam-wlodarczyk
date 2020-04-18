@@ -1,10 +1,11 @@
+//Zuza Śliwińska Adam Włodarczyk
 #include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
-unsigned int ns[] = {1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000};
+unsigned int ns[] = { 10000,15000,20000,25000,30000,35000,40000};
 
 // each list node contains an integer key value and pointer to next list node
 struct node {
@@ -17,15 +18,15 @@ struct node *head = NULL;
 
 
 struct node* list_insert(int value) {
-struct node *new_node = (struct node *)malloc(sizeof(new_node));
-    new_node->key = value;
-    new_node->next = head;
-    head = new_node;
+struct node *new_node = (struct node *)malloc(sizeof(new_node)); //nowa zmienna i alokacja pamięci
+    new_node->key = value;   //nadanie mu wartości
+    new_node->next = head;   //kolejnym elementem jest stara głowa
+    head = new_node;         //zmiana głowy listy na utworzony element
     return NULL;
 }
 
-struct node* list_search(int value) {
-    struct node *temp;
+struct node* list_search(int value) {  //rekurencyjne wyszukiwanie elementów w liście zaczynając od glowy
+    struct node *temp;                
     temp=head;
     while(temp != NULL && temp->key != value){
         temp=temp->next;
@@ -35,9 +36,9 @@ struct node* list_search(int value) {
 
 void list_delete(int value) {
   if(head->key == value){
-        head=head->next;
+        head=head->next;    //jeśli szukana wartość jest pierwszą wartością listy
     }else{
-        struct node *prev, *temp;
+        struct node *prev, *temp;   //dla n od 2...
         temp = head;
         while(temp->key != value){
             prev = temp;
@@ -47,11 +48,11 @@ void list_delete(int value) {
     }
 }
 
-unsigned int list_size() {
-    int count = 0;
+unsigned int list_size() { // program mierzący rekurencyjnie rozmiar listy 
+    int count = 0; 
     struct node *temp;
     temp = head;
-    while(temp != NULL)
+    while(temp != NULL)  //przestaje zliczać gdy nie ma kolejnego wskaźnika 
     {
         count=count+1;
         temp=temp->next;
@@ -122,6 +123,7 @@ int main() {
             // search for every element in the order present in array `t`
             clock_t search_time = clock();
             for (unsigned int k = 0; k < n; k++) {
+                
                 struct node *iter = list_search(t[k]);
                 assert(iter != NULL);       // found element cannot be NULL
                 assert(iter->key == t[k]);  // found element must contain the expected value
