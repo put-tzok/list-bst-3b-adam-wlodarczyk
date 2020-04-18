@@ -1,3 +1,4 @@
+//Zuza Śliwińska Adam Włodarczyk
 #include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -5,7 +6,7 @@
 #include <signal.h>
 #include <time.h>
 
-unsigned int ns[] = { 10, /* TODO: fill values which will be used as lists' sizes */ };
+unsigned int ns[] = { 10000,15000,20000,25000,30000,35000,40000 };
 
 // each tree node contains an integer key and pointers to left and right children nodes
 struct node {
@@ -18,29 +19,62 @@ struct node {
 struct node *root = NULL;
 
 struct node **tree_search(struct node **candidate, int value) {
-    // TODO: implement
-    return NULL;
+     if (*candidate == NULL){
+        return candidate;
+    }
+    if (value < (**candidate).key){
+        return tree_search(&(**candidate).left, value);
+    }
+    if (value > (**candidate).key){
+        return tree_search(&(**candidate).right, value);
+    }
+    return candidate;
 }
 
 struct node* tree_insert(int value) {
-    // TODO: implement
+struct node **temp, *help;
+help = (struct node *)malloc(sizeof(struct node));
+help->key = value;
+help->left = NULL;
+help->right = NULL;
+temp = tree_search(&root, value);
+*temp = help;
     return NULL;
 }
 
 
 
 struct node **tree_maximum(struct node **candidate) {
-    // TODO: implement
-    return NULL;
+    if((**candidate).right != NULL){
+        return tree_maximum(&(*candidate)->right);
+    }
+    return candidate;
 }
 
 void tree_delete(int value) {
-    // TODO: implement
+    struct node **temp, **help;
+    temp = tree_search(&root, value);
+    if((*temp)->right == NULL && (*temp)->left == NULL){
+        *temp = NULL;
+    } else if((*temp)->right == NULL && (*temp)->left != NULL){
+        *temp = (*temp)->left;
+    } else if((*temp)->right != NULL && (*temp)->left == NULL){
+       *temp = (*temp)->right;
+    } else if((*temp)->right != NULL && (*temp)->left != NULL){
+        help = tree_maximum(&(*temp)->left);
+        (*temp)->key = (*help)->key;
+        *help = (*help)->left;
+    }
 }
 
 unsigned int tree_size(struct node *element) {
-    // TODO: implement
-    return 0;
+    int size;
+     if (element==NULL){
+        return 0;
+    }
+    else {
+        return tree_size(element->left) + 1 + tree_size(element->right);
+    }
 }
 
 /*
@@ -118,12 +152,32 @@ void insert_random(int *t, int n) {
     }
 }
 
+void insert_biject(int *t, int Cor_1, int Cor_2) {
+    if (Cor_1==Cor_2){
+        tree_insert(t[Cor_1]);
+    }
+    else if (Cor_2-Cor_1==1){
+        tree_insert(t[Cor_1]);
+        tree_insert(t[Cor_2]);
+    }
+    else{
+        int q=Cor_1+(Cor_2-Cor_1)/2;
+        tree_insert(t[q]);
+        insert_biject(t, Cor_1, q-1);
+        insert_biject(t, q+1, Cor_2);
+    }
+}
 void insert_binary(int *t, int n) {
-    // TODO: implement
+    insert_biject(t, 0, n-1);
 }
 
 char *insert_names[] = { "Increasing", "Random", "Binary" };
 void (*insert_functions[])(int*, int) = { insert_increasing, insert_random, insert_binary };
+
+
+
+#define REPEATS 100000
+
 
 int main(int argc, char **argv) {
     for (unsigned int i = 0; i < sizeof(insert_functions) / sizeof(*insert_functions); i++) {
