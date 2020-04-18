@@ -19,21 +19,21 @@ struct node {
 struct node *root = NULL;
 
 struct node **tree_search(struct node **candidate, int value) {
-     if (*candidate == NULL){
-        return candidate;
+     if (*candidate == NULL){  //jeśli szukana wartość jest w korzeniu zwraca ją 
+        return candidate;     
     }
-    if (value < (**candidate).key){
-        return tree_search(&(**candidate).left, value);
+    if (value < (**candidate).key){      //jeśli wartość jest mniejsza wznawia szukanie
+        return tree_search(&(**candidate).left, value);   // dla lewej gałęzi
     }
-    if (value > (**candidate).key){
-        return tree_search(&(**candidate).right, value);
+    if (value > (**candidate).key){     //jeśli wartość jest większa rekurencyjnie szuka 
+        return tree_search(&(**candidate).right, value);    //w prawej części drzewa
     }
     return candidate;
 }
 
-struct node* tree_insert(int value) {
-struct node **temp, *help;
-help = (struct node *)malloc(sizeof(struct node));
+struct node* tree_insert(int value) { //wyszukanie optymalnej pustej gałęzi dla wartości
+struct node **temp, *help;            // i umieszczenie wartości jej w tym miejscu jako korzenia
+help = (struct node *)malloc(sizeof(struct node)); 
 help->key = value;
 help->left = NULL;
 help->right = NULL;
@@ -44,8 +44,8 @@ temp = tree_search(&root, value);
 
 
 
-struct node **tree_maximum(struct node **candidate) {
-    if((**candidate).right != NULL){
+struct node **tree_maximum(struct node **candidate) { //rekurencyjnie dąży do gałęzi najbardziej z prawej strony
+    if((**candidate).right != NULL){                //ponieważ jest największa
         return tree_maximum(&(*candidate)->right);
     }
     return candidate;
@@ -54,26 +54,26 @@ struct node **tree_maximum(struct node **candidate) {
 void tree_delete(int value) {
     struct node **temp, **help;
     temp = tree_search(&root, value);
-    if((*temp)->right == NULL && (*temp)->left == NULL){
+    if((*temp)->right == NULL && (*temp)->left == NULL){ //0 węzłów potomnych 
         *temp = NULL;
-    } else if((*temp)->right == NULL && (*temp)->left != NULL){
+    } else if((*temp)->right == NULL && (*temp)->left != NULL){ //1 węzęł potomny z lewej strony
         *temp = (*temp)->left;
-    } else if((*temp)->right != NULL && (*temp)->left == NULL){
+    } else if((*temp)->right != NULL && (*temp)->left == NULL){  // 1 węzeł potomny z prawej strony
        *temp = (*temp)->right;
-    } else if((*temp)->right != NULL && (*temp)->left != NULL){
-        help = tree_maximum(&(*temp)->left);
+    } else if((*temp)->right != NULL && (*temp)->left != NULL){   // 2 węzły potomne
+        help = tree_maximum(&(*temp)->left);   // podmiana węzła na potomny o największej wartości
         (*temp)->key = (*help)->key;
         *help = (*help)->left;
     }
 }
 
-unsigned int tree_size(struct node *element) {
-    int size;
+unsigned int tree_size(struct node *element) { //dodaje po kolei liczbę węzłów
+    int size; 
      if (element==NULL){
         return 0;
     }
     else {
-        return tree_size(element->left) + 1 + tree_size(element->right);
+        return tree_size(element->left) + 1 + tree_size(element->right); //+1 to korzeń początkowy
     }
 }
 
@@ -152,7 +152,7 @@ void insert_random(int *t, int n) {
     }
 }
 
-void insert_biject(int *t, int Cor_1, int Cor_2) {
+void insert_biject(int *t, int Cor_1, int Cor_2) {  //algorytm równoważenia drzewa
     if (Cor_1==Cor_2){
         tree_insert(t[Cor_1]);
     }
